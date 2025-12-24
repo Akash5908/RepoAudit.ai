@@ -2,7 +2,7 @@ import { Shield, LayoutDashboard, HelpCircle, FileText } from "lucide-react";
 
 export const Navbar = () => {
     return (
-        <header className="sticky top-0 w-full flex justify-center border-b border-slate-200 bg-white/90 backdrop-blur-xl z-30 shadow-sm">
+        <header className="sticky top-0 h-15 w-full flex justify-center border-b border-slate-200 bg-white/90 backdrop-blur-xl z-30 shadow-sm p-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between w-full">
                 {/* Left: Logo */}
                 <div className="flex items-center gap-3 group cursor-pointer">
@@ -18,7 +18,7 @@ export const Navbar = () => {
                 </div>
 
                 {/* Center: Clean Nav Links */}
-                <nav className="hidden md:flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-500">
+                {/* <nav className="hidden md:flex items-center gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-full text-xs font-semibold text-slate-500">
                     <a href="#" className="text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-sm transition-all active:scale-[0.96]">
                         <LayoutDashboard className="h-3.5 w-3.5" />
                         Scanner
@@ -31,11 +31,11 @@ export const Navbar = () => {
                         <HelpCircle className="h-3.5 w-3.5 text-slate-500" />
                         Docs
                     </a>
-                </nav>
+                </nav> */}
 
                 {/* Right: Status & Actions */}
-                <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-[10px] sm:text-xs font-bold tracking-wide font-mono shadow-sm">
+                <div className="flex items-center gap-3 sm:gap-4 " >
+                    <div className="flex items-center gap-2 px-3  bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-[10px] sm:text-xs font-bold tracking-wide font-mono shadow-sm" style={{ padding: "4px 4px 4px 4px" }}>
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -49,6 +49,7 @@ export const Navbar = () => {
                         rel="noopener noreferrer"
                         className="p-2 text-slate-400 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all active:scale-[0.96] shadow-sm"
                         aria-label="GitHub Repository"
+                        style={{ padding: "4px 4px 4px 4px" }}
                     >
                         <svg
                             className="h-4 w-4"

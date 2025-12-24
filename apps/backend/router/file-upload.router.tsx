@@ -21,6 +21,16 @@ router.post("/", upload.single("file"), async (req, res) => {
     return;
   }
 
+  // Verify that the uploaded file is a zip file
+  const isZip = req.file.mimetype === "application/zip" || 
+                req.file.mimetype === "application/x-zip-compressed" || 
+                req.file.originalname.toLowerCase().endsWith(".zip");
+  
+  if (!isZip) {
+    res.status(400).json({ error: "Invalid file type. Only .zip files are allowed." });
+    return;
+  }
+
   const jobId = uuidv4();
 
   await myQueue.add("auditWorker", { jobId: jobId, filePath: req.file.path });
