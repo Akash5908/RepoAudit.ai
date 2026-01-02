@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^2.14.0",
     "adm-zip": "^0.6.0",
     "bullmq": "^5.80.2",
     "cors": "^2.8.6",
