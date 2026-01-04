@@ -1,6 +1,7 @@
 import express, { Response, Request } from "express";
 import { fileUploadRouter } from "./router/file-upload.router.js";
 import cors from "cors";
+import "./worker.js";
 
 const app = express();
 app.use(express.json());
