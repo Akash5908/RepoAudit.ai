@@ -31,21 +31,41 @@ export const DropZone = () => {
     }
   };
 
+  const dashboard = ["Seo", "Code writting", "estimate price"];
+
   return (
     <>
-      {selectedFile ? (
-        <div className=" w-screen h-screen flex justify-center items-center">
-          <ProcessFile
-            handleRemoveFile={handleRemoveFile}
-            handleFileUpload={handleFileUpload}
-            selectedFile={selectedFile}
-            loading={loading}
-          />
+      {fileUploaded ? (
+        <div>
+          <div>
+            Your file got uploaded :)
+            {dashboard.map((item) => (
+              <div className="border w-[20vw] h-[10vh] rounded-sm">
+                {" "}
+                <div className=" h-full flex justify-center items-center">
+                  {item}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
-        <>
-          <FileDropzone onFileAccepted={handleFileAccept} />
-        </>
+        <div>
+          {selectedFile ? (
+            <div className=" w-screen h-screen flex justify-center items-center">
+              <ProcessFile
+                handleRemoveFile={handleRemoveFile}
+                handleFileUpload={handleFileUpload}
+                selectedFile={selectedFile}
+                loading={loading}
+              />
+            </div>
+          ) : (
+            <>
+              <FileDropzone onFileAccepted={handleFileAccept} />
+            </>
+          )}
+        </div>
       )}
     </>
   );
