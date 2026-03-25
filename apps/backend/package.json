@@ -15,6 +15,7 @@
     "bullmq": "^5.80.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "ioredis": "^5.11.1",
     "mongoose": "^9.7.4",
     "multer": "^2.2.0",
     "nodemon": "^3.1.14",
