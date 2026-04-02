@@ -1,7 +1,9 @@
 import express, { Router } from "express";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
+import { Queue } from "bullmq";
 
+const myQueue = new Queue("foo");
 const router: Router = Router();
 const upload = multer({ dest: "/tmp/uploads/" });
 
@@ -9,7 +11,7 @@ const upload = multer({ dest: "/tmp/uploads/" });
  * It will receive the file and use multer to store in vps /tmp/uploads folder
  * And will also create a JobID using a UUID
  */
-router.post("/", upload.single("file"), (req, res) => {
+router.post("/", upload.single("file"), async (req, res) => {
   console.log(req.file, req.body);
   // Edge case: Verify a file was actually uploaded
   if (!req.file) {
@@ -18,6 +20,8 @@ router.post("/", upload.single("file"), (req, res) => {
   }
 
   const jobId = uuidv4();
+
+  await myQueue.add("auditWorker", { jobId: jobId, filePath: req.file.path });
 
   res.status(202).json({
     message: "File uploaded successfully",
