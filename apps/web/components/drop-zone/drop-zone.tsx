@@ -15,11 +15,24 @@ export const DropZone = () => {
     setSelectedFile(undefined);
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (selectedFile == undefined) return;
     console.log("File upload", selectedFile);
+
     setLoading(true);
+
+    const formData = new FormData();
+    // Grab the first file from the state array
+    formData.append("file", selectedFile);
+
     try {
+      const res = await fetch(`http://localhost:5001/api/v1/file-upload`, {
+        method: "POST",
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        body: formData,
+      });
       // will add logic to target the file uploading endpoint.
       setTimeout(() => {
         setLoading(false);
