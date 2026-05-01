@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import multer from "multer";
 
-const router: Router = express.Router();
+const router: Router = Router();
 const upload = multer({ dest: "./public/data/uploads/" });
 
 /** Will define a post endpoint
