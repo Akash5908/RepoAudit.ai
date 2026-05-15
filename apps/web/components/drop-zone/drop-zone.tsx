@@ -31,22 +31,36 @@ export const DropZone = () => {
     }
   };
 
-  const dashboard = ["Seo", "Code writting", "estimate price"];
+  const dashboard = [
+    { label: "Seo", value: 10 },
+    { label: "Code writting", value: 20 },
+    { label: "estimate price", value: 40 },
+  ];
 
   return (
     <>
       {fileUploaded ? (
-        <div>
-          <div>
-            Your file got uploaded :)
-            {dashboard.map((item) => (
-              <div className="border w-[20vw] h-[10vh] rounded-sm">
-                {" "}
-                <div className=" h-full flex justify-center items-center">
-                  {item}
+        <div className="w-screen h-screen">
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <div className="h-[5vh]  flex items-center">
+              <span>Your file got uploaded :)</span>
+            </div>
+            <div className="grid grid-cols-3 gap-4 my-9">
+              {dashboard.map((item) => (
+                <div
+                  className="border w-[20vw] h-[10vh] flex flex-col rounded-sm "
+                  key={item.label}
+                >
+                  {" "}
+                  <div className=" h-full flex justify-center items-center">
+                    {item.label}
+                  </div>
+                  <div className=" h-full flex justify-center items-center">
+                    {item.value}/100
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       ) : (
