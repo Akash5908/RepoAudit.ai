@@ -26,10 +26,6 @@ export default function Home() {
     <div className="w-screen h-screen ">
       {/* Container */}
       <main className="flex  w-full h-full flex-col justify-center items-center">
-        <div className="flex justify-center h-auto ">
-          <h1>Drop your project to Start!</h1>
-        </div>
-
         {/* Dropzone  */}
         {/* <div className="w-[50vw] h-[50vh] bg-blue-500 rounded-md flex justify-center items-center">
           <Button size="lg" className="border border-white rounded-md cursor-pointer w-[10vw] bg-slate-600">
