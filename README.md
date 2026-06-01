@@ -1,159 +1,91 @@
-# Turborepo starter
+# 🚀 RepoAudit.ai
+RepoAudit.ai is an AI-powered static code analysis and financial estimation platform. It ingests repository folders or compressed .zip files, maps project architecture, cleans out unnecessary clutter, and runs an intelligent audit to grade code health, security risks, and technical debt. Additionally, it leverages a regional developer-pricing matrix paired with AI inference to calculate a localized development cost budget based on the codebase's complexity.
 
-This Turborepo starter is maintained by the Turborepo core team.
+## 🛠️ Tech Stack & Architecture
+Frontend: Next.js (App Router), TypeScript, Tailwind CSS, Shadcn UI, Recharts (for analytics visualization).
+Backend: Node.js, NestJS/Express.js, TypeScript.
+Background Jobs / Worker: Redis + BullMQ (Handles file extraction and long-running AI streaming queries asynchronously).
+Static Parser: Custom AST mapping tool to calculate exact Lines of Code (LOC) and dependency distributions.
+AI Orchestration: OpenAI API / Anthropic Claude SDK with JSON-mode structure parsing.
 
-## Using this example
+📦 Features
+Zero-Clutter Ingestion: Automatically filters out heavy environment directories (node_modules, dist, build, .git, and lockfiles) during file extraction to preserve bandwidth and optimize token limits.
+Multi-Dimensional Scoring: Evaluates repository health dynamically, outputting an overall score out of 100 alongside structured metrics on Readability, Architecture Stability, and Security Vector Risks.
+Regional Budget Engine: Translates calculated codebase complexity into real-world project costs, generating localized development budget tiers (e.g., USD, INR, EUR) mapped against regional market data.
+Interactive Analytics Dashboard: Renders clean, visual graphs displaying file density, language distributions, and actionable code improvement workflows.
 
-Run the following command:
+🗺️ System Architecture Flow
+[ User Uploads .zip / Links Repo ] 
+                │
+                ▼
+      [ BullMQ Background Queue ]
+                │
+                ▼
+   [ File Stripping & Token Filter ]  ──► (Removes node_modules, dist, etc.)
+                │
+                ▼
+     [ AST Tree Mapping Engine ]      ──► (Calculates LOC, Tree Map, Dependencies)
+                │
+                ▼
+     [ AI Context Prompter Service ]  ──► (Blends Code Map with Regional Matrix)
+                │
+                ▼
+      [ Database Sync (Postgres) ]    ──► (Stores parsed metadata and JSON report)
+                │
+                ▼
+      [ Next.js UI Dashboard ]        ──► (Visualizes Scores, Audits & Budgets)
 
-```sh
-npx create-turbo@latest
-```
+🚀 Getting Started
+Prerequisites
+Node.js (v18.x or higher)
+Redis (Running locally or via cloud instance for the background processing queue)
+OpenAI or Anthropic API Key
+Installation
+Clone the repository:
+Bash
+git clone https://github.com/Akash5908/RepoAudit.ai.git
+cd RepoAudit.ai
+Install dependencies for both the client and server:
+Bash
+# Install server modules
+cd server && npm install
 
-## What's inside?
+# Install frontend modules
+cd ../client && npm install
+Configure your Environment Variables:
+Create a .env file in the /server directory:
+Code snippet
+PORT=5000
+REDIS_URL=redis://127.0.0.1:6379
+OPENAI_API_KEY=your_openai_api_key_here
+DATABASE_URL=your_postgresql_connection_string
+Run the development environment:
+Bash
+# Start Redis server locally (if not running)
+redis-server
 
-This Turborepo includes the following packages/apps:
+# Start Backend Worker & API Server
+cd server && npm run dev
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+# Start Frontend Dev Server
+cd ../client && npm run dev
+🤖 AI Prompt Definition (JSON Spec)
+The backend workflow parser enforces a rigid JSON output contract from the LLM. The schema utilizes the following layout to populate the system visualization engine:
+JSON
+{
+  "overallScore": 84,
+  "breakdown": {
+    "readability": 88,
+    "architecture": 80,
+    "securityRisk": "Medium"
+  },
+  "technicalDebtSummary": "Codebase displays modular architecture but relies on deep conditional nesting inside controller layers. Missing comprehensive unit testing profiles.",
+  "estimatedHoursToBuildFromScratch": 140,
+  "budgetInference": {
+    "US_USD": "$12,000 - $18,000",
+    "IN_INR": "₹3,50,000 - ₹5,00,000",
+    "EU_EUR": "€10,500 - €15,000"
+  }
+}
+📄 License
+Distributed under the MIT License. See LICENSE for more information.
