@@ -1,77 +1,87 @@
-# 🚀 RepoAudit.ai
-RepoAudit.ai is an AI-powered static code analysis and financial estimation platform. It ingests repository folders or compressed .zip files, maps project architecture, cleans out unnecessary clutter, and runs an intelligent audit to grade code health, security risks, and technical debt. Additionally, it leverages a regional developer-pricing matrix paired with AI inference to calculate a localized development cost budget based on the codebase's complexity.
+# RepoAudit.ai
 
-## 🛠️ Tech Stack & Architecture
-Frontend: Next.js (App Router), TypeScript, Tailwind CSS, Shadcn UI, Recharts (for analytics visualization).
-Backend: Node.js, NestJS/Express.js, TypeScript.
-Background Jobs / Worker: Redis + BullMQ (Handles file extraction and long-running AI streaming queries asynchronously).
-Static Parser: Custom AST mapping tool to calculate exact Lines of Code (LOC) and dependency distributions.
-AI Orchestration: OpenAI API / Anthropic Claude SDK with JSON-mode structure parsing.
+RepoAudit.ai is a tool for static code analysis and development cost estimation. You can upload a repository folder or a zip file, and it will analyze the project architecture, ignore unnecessary files (like `node_modules`), and evaluate code health, security risks, and technical debt. It also calculates a localized development cost budget based on the complexity of the codebase and regional pricing data.
 
-📦 Features
-Zero-Clutter Ingestion: Automatically filters out heavy environment directories (node_modules, dist, build, .git, and lockfiles) during file extraction to preserve bandwidth and optimize token limits.
-Multi-Dimensional Scoring: Evaluates repository health dynamically, outputting an overall score out of 100 alongside structured metrics on Readability, Architecture Stability, and Security Vector Risks.
-Regional Budget Engine: Translates calculated codebase complexity into real-world project costs, generating localized development budget tiers (e.g., USD, INR, EUR) mapped against regional market data.
-Interactive Analytics Dashboard: Renders clean, visual graphs displaying file density, language distributions, and actionable code improvement workflows.
+## Architecture
 
-🗺️ System Architecture Flow
-[ User Uploads .zip / Links Repo ] 
-                │
-                ▼
-      [ BullMQ Background Queue ]
-                │
-                ▼
-   [ File Stripping & Token Filter ]  ──► (Removes node_modules, dist, etc.)
-                │
-                ▼
-     [ AST Tree Mapping Engine ]      ──► (Calculates LOC, Tree Map, Dependencies)
-                │
-                ▼
-     [ AI Context Prompter Service ]  ──► (Blends Code Map with Regional Matrix)
-                │
-                ▼
-      [ Database Sync (Postgres) ]    ──► (Stores parsed metadata and JSON report)
-                │
-                ▼
-      [ Next.js UI Dashboard ]        ──► (Visualizes Scores, Audits & Budgets)
+- **Frontend**: Next.js (App Router), TypeScript, Tailwind CSS, Shadcn UI, Recharts.
+- **Backend**: Node.js, NestJS/Express.js, TypeScript.
+- **Background Jobs**: Redis + BullMQ (handles file extraction and AI queries).
+- **Static Parser**: Custom AST mapping to calculate LOC and dependencies.
+- **AI Orchestration**: OpenAI API / Anthropic Claude SDK with JSON-mode parsing.
 
-🚀 Getting Started
-Prerequisites
-Node.js (v18.x or higher)
-Redis (Running locally or via cloud instance for the background processing queue)
-OpenAI or Anthropic API Key
-Installation
-Clone the repository:
-Bash
-git clone https://github.com/Akash5908/RepoAudit.ai.git
-cd RepoAudit.ai
-Install dependencies for both the client and server:
-Bash
-# Install server modules
-cd server && npm install
+## Features
 
-# Install frontend modules
-cd ../client && npm install
-Configure your Environment Variables:
-Create a .env file in the /server directory:
-Code snippet
-PORT=5000
-REDIS_URL=redis://127.0.0.1:6379
-OPENAI_API_KEY=your_openai_api_key_here
-DATABASE_URL=your_postgresql_connection_string
-Run the development environment:
-Bash
-# Start Redis server locally (if not running)
-redis-server
+- **Efficient Ingestion**: Automatically ignores heavy directories like `node_modules`, `dist`, `build`, `.git`, and lockfiles to save bandwidth and token limits.
+- **Scoring System**: Evaluates repository health, outputting an overall score (out of 100) and metrics on readability, architecture, and security.
+- **Budget Estimation**: Translates codebase complexity into development budgets (USD, INR, EUR) using regional market data.
+- **Analytics Dashboard**: Visualizes file density, language distributions, and code improvement suggestions.
 
-# Start Backend Worker & API Server
-cd server && npm run dev
+## How it works
 
-# Start Frontend Dev Server
-cd ../client && npm run dev
-🤖 AI Prompt Definition (JSON Spec)
-The backend workflow parser enforces a rigid JSON output contract from the LLM. The schema utilizes the following layout to populate the system visualization engine:
-JSON
+1. User uploads a zip or links a repo.
+2. BullMQ adds the task to a background queue.
+3. The parser strips out unnecessary files (`node_modules`, `dist`, etc.).
+4. AST tree mapping calculates LOC, structure, and dependencies.
+5. The AI service processes the code map alongside the regional pricing matrix.
+6. Results (JSON report and metadata) are stored in Postgres.
+7. Next.js dashboard displays the scores, audit details, and budgets.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- Redis (running locally or via cloud provider)
+- OpenAI or Anthropic API Key
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Akash5908/RepoAudit.ai.git
+   cd RepoAudit.ai
+   ```
+
+2. Install dependencies:
+   ```bash
+   # Install server dependencies
+   cd server
+   npm install
+
+   # Install frontend dependencies
+   cd ../client
+   npm install
+   ```
+
+3. Environment Variables:
+   Create a `.env` file in the `/server` directory:
+   ```env
+   PORT=5000
+   REDIS_URL=redis://127.0.0.1:6379
+   OPENAI_API_KEY=your_openai_api_key_here
+   DATABASE_URL=your_postgresql_connection_string
+   ```
+
+4. Run locally:
+   ```bash
+   # Start Redis (if not running)
+   redis-server
+
+   # Start backend API and worker
+   cd server
+   npm run dev
+
+   # Start frontend in a new terminal
+   cd ../client
+   npm run dev
+   ```
+
+## AI Output Format
+
+The backend enforces a strict JSON output from the LLM to populate the dashboard. Here is an example of the schema:
+
+```json
 {
   "overallScore": 84,
   "breakdown": {
@@ -87,5 +97,8 @@ JSON
     "EU_EUR": "€10,500 - €15,000"
   }
 }
-📄 License
-Distributed under the MIT License. See LICENSE for more information.
+```
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
