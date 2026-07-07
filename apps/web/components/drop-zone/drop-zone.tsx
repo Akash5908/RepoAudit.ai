@@ -6,7 +6,7 @@ import { ProcessFile } from "./process-file";
 export const DropZone = () => {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [loading, setLoading] = useState(false);
-
+  const [fileUploaded, setFileUploaded] = useState(false);
   const handleFileAccept = (file: File) => {
     setSelectedFile(file);
   };
@@ -21,7 +21,11 @@ export const DropZone = () => {
     }
     try {
       // will add logic to target the file uploading endpoint.
+      setTimeout(() => {
+        setFileUploaded(true);
+      }, 2000);
     } catch (error) {
+      setFileUploaded(false);
     } finally {
       setLoading(false);
     }
@@ -33,7 +37,9 @@ export const DropZone = () => {
         <div className=" w-screen h-screen flex justify-center items-center">
           <ProcessFile
             handleRemoveFile={handleRemoveFile}
+            handleFileUpload={handleFileUpload}
             selectedFile={selectedFile}
+            loading={loading}
           />
         </div>
       ) : (
