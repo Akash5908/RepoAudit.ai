@@ -16,17 +16,17 @@ export const DropZone = () => {
   };
 
   const handleFileUpload = () => {
-    if (selectedFile == undefined) {
-      setLoading(true);
-    }
+    if (selectedFile == undefined) return;
+    console.log("File upload", selectedFile);
+    setLoading(true);
     try {
       // will add logic to target the file uploading endpoint.
       setTimeout(() => {
+        setLoading(false);
         setFileUploaded(true);
       }, 2000);
     } catch (error) {
       setFileUploaded(false);
-    } finally {
       setLoading(false);
     }
   };

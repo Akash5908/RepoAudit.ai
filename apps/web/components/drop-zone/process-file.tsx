@@ -26,8 +26,18 @@ export const ProcessFile = ({
           <div>{selectedFile.name}</div>
         </div>
         <div>
-          <Button className="w-[5vw] rounded-xl" onClick={handleFileUpload}>
-            {loading ? `Processing ${(<SpinnerCustom />)}` : "Proceed"}
+          <Button
+            className="w-auto px-10 rounded-xl"
+            onClick={handleFileUpload}
+          >
+            {loading ? (
+              <div className="min-w-[8vw] flex items-center justify-center gap-2 py-6">
+                <span>Processing</span>
+                <SpinnerCustom />
+              </div>
+            ) : (
+              <div className="min-w-[5vw]">Proceed</div>
+            )}
           </Button>
         </div>
       </div>
