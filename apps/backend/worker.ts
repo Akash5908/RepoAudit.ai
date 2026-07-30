@@ -1,5 +1,9 @@
 import { Worker } from "bullmq";
 import { Redis } from "ioredis";
+import AdmZip from "adm-zip";
+import * as os from "os";
+import * as path from "path";
+import * as fs from "fs/promises";
 
 const connection = new Redis({ maxRetriesPerRequest: null });
 
@@ -39,23 +43,59 @@ const worker = new Worker(
     const { jobId, filePath } = job.data;
     console.log(`Starting audit job for ID: ${jobId}, File: ${filePath}`);
 
-    const stages = [
-      { name: "Decompressing repository...", progress: 15 },
-      { name: "Performing static security scanning...", progress: 40 },
-      { name: "Auditing code patterns and readability...", progress: 65 },
-      { name: "Analyzing SEO and bundle optimization...", progress: 85 },
-      { name: "Generating comprehensive audit report...", progress: 95 },
-    ];
+    let tempDir = "";
+    let extractedFileCount = 0;
+    let extractedSizeBytes = 0;
 
     try {
-      for (const stage of stages) {
-        const progressReport: AuditReport = {
+      let progressReport: AuditReport = {
+        jobId,
+        status: "processing",
+        progress: 15,
+        currentStage: "Decompressing repository...",
+      };
+      await connection.set(`audit:job:${jobId}`, JSON.stringify(progressReport), "EX", 3600);
+      console.log(`Job ${jobId}: Decompressing repository... (15%)`);
+
+      // 1. Decompressing and filtering
+      tempDir = await fs.mkdtemp(path.join(os.tmpdir(), `repo-audit-${jobId}-`));
+      
+      const zip = new AdmZip(filePath);
+      const zipEntries = zip.getEntries();
+      
+      const ignorePattern = /(?:^|\/)(node_modules|\.git|\.next|dist|build|\.DS_Store|__MACOSX)(?:\/|$)/i;
+      
+      for (const entry of zipEntries) {
+        if (entry.entryName.match(ignorePattern)) {
+          continue;
+        }
+
+        if (!entry.isDirectory) {
+          extractedFileCount++;
+          extractedSizeBytes += entry.header.size;
+        }
+        
+        // Extract to tempDir
+        zip.extractEntryTo(entry, tempDir, true, true);
+      }
+
+      console.log(`Job ${jobId}: Extracted ${extractedFileCount} files (${extractedSizeBytes} bytes) to ${tempDir}`);
+      
+      const remainingStages = [
+        { name: "Performing static security scanning...", progress: 40 },
+        { name: "Auditing code patterns and readability...", progress: 65 },
+        { name: "Analyzing SEO and bundle optimization...", progress: 85 },
+        { name: "Generating comprehensive audit report...", progress: 95 },
+      ];
+
+      for (const stage of remainingStages) {
+        progressReport = {
           jobId,
           status: "processing",
           progress: stage.progress,
           currentStage: stage.name,
         };
-        await connection.set(`audit:job:${jobId}`, JSON.stringify(progressReport), "EX", 3600); // 1 hr TTL
+        await connection.set(`audit:job:${jobId}`, JSON.stringify(progressReport), "EX", 3600);
         console.log(`Job ${jobId}: ${stage.name} (${stage.progress}%)`);
         await sleep(1500); // Wait 1.5 seconds per stage
       }
@@ -74,8 +114,8 @@ const worker = new Worker(
             codeQuality: 82,
           },
           summary: {
-            fileCount: 42,
-            sizeBytes: 1240500,
+            fileCount: extractedFileCount || 42,
+            sizeBytes: extractedSizeBytes || 1240500,
             primaryLanguage: "TypeScript",
           },
           findings: [
@@ -84,7 +124,7 @@ const worker = new Worker(
               severity: "high",
               category: "Security",
               title: "Exposed API Keys or Secret Tokens",
-              description: "A hardcoded development credentials pattern matches in `.env.development`. Revoke credentials immediately.",
+              description: "A hardcoded development credentials pattern matches in \`.env.development\`. Revoke credentials immediately.",
               file: ".env.development:L12",
             },
             {
@@ -126,6 +166,15 @@ const worker = new Worker(
         currentStage: `Failed: ${err.message}`,
       };
       await connection.set(`audit:job:${jobId}`, JSON.stringify(failedReport), "EX", 3600);
+    } finally {
+      if (tempDir) {
+        try {
+          await fs.rm(tempDir, { recursive: true, force: true });
+          console.log(`Job ${jobId}: Cleaned up temporary directory ${tempDir}`);
+        } catch (cleanupErr) {
+          console.error(`Job ${jobId}: Failed to clean up ${tempDir}`, cleanupErr);
+        }
+      }
     }
   },
   { connection },
