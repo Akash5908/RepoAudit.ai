@@ -261,101 +261,115 @@ export function AuditDashboard({ report, onReset }: AuditDashboardProps) {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8" >
 
         {/* Left Sidebar */}
-        <div className="xl:col-span-5 flex flex-col gap-8 ">
+        <div className="xl:col-span-4 flex flex-col gap-8">
 
           {/* Project Metadata Section */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-
-            {/* Project Metadata Section */}
-            <div className="p-4 sm:p-5">
-              <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500 flex items-center gap-2 font-mono mb-2">
-                <Server className="h-4 w-4 text-indigo-500" />
-                Project Metadata
-              </h3>
-
-              <div className="text-sm font-sans">
-                <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 flex items-center gap-2">
-                    <FileCode2 className="h-4 w-4 text-slate-400" />
-                    Total Files
-                  </span>
-                  <span className="font-mono font-bold text-slate-900 tabular-nums">{summary.fileCount}</span>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 flex items-center gap-2">
-                    <HardDrive className="h-4 w-4 text-slate-400" />
-                    Repo Size
-                  </span>
-                  <span className="font-mono font-bold text-slate-900 tabular-nums">{formatSize(summary.sizeBytes)}</span>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 flex items-center gap-2">
-                    <Code className="h-4 w-4 text-slate-400" />
-                    Primary Language
-                  </span>
-                  <span className="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 text-[13px]">{summary.primaryLanguage}</span>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-slate-400" />
-                    AST Engine
-                  </span>
-                  <span className="font-mono text-slate-900 font-semibold tabular-nums text-[13px]">v2.4 Core</span>
-                </div>
-              </div>
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 transition-all hover:shadow-md">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <Server className="w-4 h-4" />
+              Project Metadata
+            </h3>
+            
+            <ul className="space-y-4 text-sm">
+              <li className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-2"><FileCode2 className="w-4 h-4 text-slate-400" />Total Files</span>
+                <span className="font-semibold text-slate-900">{summary.fileCount}</span>
+              </li>
+              <li className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-2"><HardDrive className="w-4 h-4 text-slate-400" />Repo Size</span>
+                <span className="font-semibold text-slate-900">{formatSize(summary.sizeBytes)}</span>
+              </li>
+              <li className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-2"><Code className="w-4 h-4 text-slate-400" />Primary Language</span>
+                <span className="text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded">{summary.primaryLanguage}</span>
+              </li>
+              <li className="flex justify-between items-center text-slate-600">
+                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-slate-400" />AST Engine</span>
+                <span className="font-semibold text-slate-900">v2.4 Core</span>
+              </li>
+            </ul>
           </div>
 
           {/* Filter by Severity Section */}
-          <div className="p-4 sm:p-5 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500 flex items-center gap-2 font-mono mb-2">
-              <Filter className="h-4 w-4 text-indigo-500" />
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 transition-all hover:shadow-md">
+            <h3 className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <Filter className="w-4 h-4" />
               Filter by Severity
             </h3>
-
-            <div className="space-y-0.5 font-sans">
+            
+            <div className="flex flex-col gap-2 text-sm">
               <button
                 onClick={() => setFilterSeverity(null)}
                 className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg transition-[background-color,border-color,color] text-sm font-bold flex justify-between items-center cursor-pointer",
-                  !filterSeverity
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm"
-                    : "bg-transparent text-slate-600 hover:bg-slate-200/50"
+                  "flex justify-between items-center px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer",
+                  !filterSeverity ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50 group"
                 )}
               >
-                <span>All Findings</span>
+                All Findings 
                 <span className={cn(
-                  "text-[10px] h-5 min-w-[20px] flex items-center justify-center rounded-full font-mono font-bold px-1",
-                  !filterSeverity ? "bg-white/20 text-white" : "bg-transparent text-slate-500"
+                  "text-xs px-2.5 py-0.5 rounded-full transition-colors",
+                  !filterSeverity ? "bg-indigo-200 text-indigo-800" : "bg-slate-100 group-hover:bg-indigo-100 group-hover:text-indigo-700 text-slate-500"
                 )}>{findings.length}</span>
               </button>
 
-              {[
-                { key: "high", label: "Critical Issues", count: severityCounts.high },
-                { key: "medium", label: "Warnings", count: severityCounts.medium },
-                { key: "low", label: "Low Risk", count: severityCounts.low },
-                { key: "info", label: "Optimizations", count: severityCounts.info },
-              ].map((sev) => (
-                <button
-                  key={sev.key}
-                  onClick={() => setFilterSeverity(filterSeverity === sev.key ? null : sev.key)}
-                  className={cn(
-                    "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-semibold flex justify-between items-center cursor-pointer",
-                    filterSeverity === sev.key
-                      ? "bg-white border border-slate-200 shadow-sm text-slate-900"
-                      : "bg-transparent hover:bg-slate-200/50 text-slate-600"
-                  )}
-                >
-                  <span>{sev.label}</span>
-                  <span className="text-[11px] font-mono font-bold text-slate-500">{sev.count}</span>
-                </button>
-              ))}
+              <button
+                onClick={() => setFilterSeverity(filterSeverity === "high" ? null : "high")}
+                className={cn(
+                  "flex justify-between items-center px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer group",
+                  filterSeverity === "high" ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                Critical Issues
+                <span className={cn(
+                  "text-xs px-2.5 py-0.5 rounded-full transition-colors",
+                  filterSeverity === "high" ? "bg-indigo-200 text-indigo-800" : "bg-slate-100 text-slate-500 group-hover:bg-rose-100 group-hover:text-rose-700"
+                )}>{severityCounts.high}</span>
+              </button>
+
+              <button
+                onClick={() => setFilterSeverity(filterSeverity === "medium" ? null : "medium")}
+                className={cn(
+                  "flex justify-between items-center px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer group",
+                  filterSeverity === "medium" ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                Warnings
+                <span className={cn(
+                  "text-xs px-2.5 py-0.5 rounded-full transition-colors",
+                  filterSeverity === "medium" ? "bg-indigo-200 text-indigo-800" : "bg-slate-100 text-slate-500 group-hover:bg-amber-100 group-hover:text-amber-700"
+                )}>{severityCounts.medium}</span>
+              </button>
+
+              <button
+                onClick={() => setFilterSeverity(filterSeverity === "low" ? null : "low")}
+                className={cn(
+                  "flex justify-between items-center px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer group",
+                  filterSeverity === "low" ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                Low Risk
+                <span className={cn(
+                  "text-xs px-2.5 py-0.5 rounded-full transition-colors",
+                  filterSeverity === "low" ? "bg-indigo-200 text-indigo-800" : "bg-slate-100 text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-700"
+                )}>{severityCounts.low}</span>
+              </button>
+
+              <button
+                onClick={() => setFilterSeverity(filterSeverity === "info" ? null : "info")}
+                className={cn(
+                  "flex justify-between items-center px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer group",
+                  filterSeverity === "info" ? "bg-indigo-50 text-indigo-700" : "text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                Optimizations
+                <span className={cn(
+                  "text-xs px-2.5 py-0.5 rounded-full transition-colors",
+                  filterSeverity === "info" ? "bg-indigo-200 text-indigo-800" : "bg-slate-100 text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-700"
+                )}>{severityCounts.info}</span>
+              </button>
+
             </div>
           </div>
-
         </div>
 
         {/* Right Findings Column */}
